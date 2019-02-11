@@ -21,7 +21,7 @@ let fetchNotes = () => {
 };
 
 let getAll = () => {
-    console.log('Getting all notes');
+    return fetchNotes();
 };
 
 let addNote = (title, body) => {
@@ -32,7 +32,6 @@ let addNote = (title, body) => {
     if(dublicateNotes.length === 0) {
         notes.push(note);
         saveNotes(notes);
-        console.log(`added note: ${title}`);
         return note;
     } else {
         console.log('Note with this title has already added');
@@ -42,9 +41,7 @@ let addNote = (title, body) => {
 let getNote = (title) => {
     let notes = fetchNotes();
     let filteredNotes = notes.filter(note => note.title === title);
-    if(filteredNotes.length) {
-        return filteredNotes[0];
-    }
+    return filteredNotes;
 };
 
 let removeNote = (title) => {
@@ -55,9 +52,15 @@ let removeNote = (title) => {
     return notes.length !== filteredNotes.length;
 };
 
+let logNote = (title) => {
+    debugger;
+    console.log(`Title: ${title}`);
+};
+
 module.exports = {
   addNote,
   getAll,
   getNote,
-  removeNote
+  removeNote,
+  logNote
 };

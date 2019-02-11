@@ -3,29 +3,58 @@ const _ = require('lodash');
 const yargs = require('yargs');
 const notes = require('./notes');
 
-let command = process.argv[2];
+const command = process.argv[2];
 
-const argv = yargs.argv;
+const titleOption = {
+    describe: 'Title of note',
+    demand: true,
+    alias: 't'
+};
+
+const bodyOption = {
+    describe: 'Body of note',
+    demand: true,
+    alias: 'b'
+};
+
+const argv = yargs
+    .command('add', 'Add a new note', {
+        title: titleOption,
+        body: bodyOption
+    })
+    .command('list', 'List all notes')
+    .command('read', 'Read a note', {
+        title: titleOption
+    })
+    .command('remove', 'Remove a note', {
+        title: titleOption
+    })
+    .help()
+    .argv;
 
 if (command === 'add') {
     notes.addNote(argv.title, argv.body);
+    notes.logNote(argv.title)
 } else if (command === 'list') {
-    notes.getAll();
+    let allNotes = notes.getAll();
+    console.log(`Printing ${allNotes.length} notes(s)`);
+    allNotes.forEach(note => {
+        notes.logNote(note.title);
+    })
 } else if (command === 'read') {
     let note = notes.getNote(argv.title);
-    if(note) {
-        console.log(note.body);
+    notes.logNote(argv.title);
+    if(note.length) {
+        console.log(note[0].body);
     } else {
-        return 'Note note found';
+        console.log('Note note found');
     }
 } else if (command === 'remove') {
     notes.removeNote(argv.title);
+    notes.logNote(argv.title)
 } else {
     console.log('Command not recognized');
 }
-
-// console.log('process: ', process.argv);
-// console.log('yarg: ', argv);
 
 try {
     let notesString = fs.readFileSync('./notes-data.json');
